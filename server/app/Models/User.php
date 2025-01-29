@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Company;
+use App\Models\Profile;
+
 
 class User extends Authenticatable
 {
@@ -20,6 +23,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'email',
+        'company_id',
         'password',
     ];
 
@@ -38,6 +42,17 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    } 
+    
     protected function casts(): array
     {
         return [
