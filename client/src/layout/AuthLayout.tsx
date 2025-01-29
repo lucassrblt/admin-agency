@@ -6,9 +6,9 @@ export default function GlobalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="flex">
       <AlertComponent />
       {children}
-    </>
+    </div>
   );
 }

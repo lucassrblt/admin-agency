@@ -1,23 +1,22 @@
 import { useQuery } from "react-query";
+import { usePropertyStore } from "@/store/usePropertyStore";
 
 export function useProperties() {
-  console.log("url", import.meta.env.VITE_BASE_URL);
-
-  const city = "";
-  const type = "";
-  console.log("refetch");
+  const { filter } = usePropertyStore();
   const { data, isLoading, isError, refetch } = useQuery(
-    "properties",
+    ["properties", filter.city, filter.type],
     async () => {
       const response = await fetch(
-        `http://localhost:8000/api/properties?city=${city}&type=${type}`
+        `http://localhost:8000/api/properties?city=${filter.city}&type=${filter.type}`
       );
       return response.json();
     }
   );
 
+  console.log("data properties on refetch", data?.data?.properties);
+
   return {
-    properties: data?.data.properties,
+    properties: data?.data?.properties,
     isLoading,
     isError,
     refetch,
@@ -29,8 +28,6 @@ export function useProperty(id: string) {
     const response = await fetch(`http://localhost:8000/api/properties/${id}`);
     return response.json();
   });
-
-  if (!isLoading) console.log("dataaaa", data);
 
   return {
     property: data?.data,

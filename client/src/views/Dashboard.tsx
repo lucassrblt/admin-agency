@@ -6,10 +6,8 @@ export function Dashboard() {
   return (
     <>
       <Header />
-      <section className="flex w-full pt-12 px-24 flex-col gap-12">
-        <ActionBar />
-        <PropertyWrapper />
-      </section>
+      <ActionBar />
+      <PropertyWrapper />
     </>
   );
 }

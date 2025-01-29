@@ -5,11 +5,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { usePropertyStore } from "@/store/usePropertyStore";
 
 import { Button } from "@/components/ui/button";
 import useCities from "@/hooks/useCities";
 import { useProperties } from "@/hooks/useProperties";
-import React from "react";
 import { useNavigate } from "react-router";
 
 export function ActionBar() {
@@ -24,19 +24,19 @@ export function ActionBar() {
 }
 
 export function SelectWrapper() {
-  const [city, setCity] = React.useState("");
-  const [type, setType] = React.useState("");
-
   const { cities } = useCities();
   const { refetch } = useProperties();
+  const { filter, setFilter } = usePropertyStore();
 
   const handleCityChange = (val: string) => {
-    setCity(val);
+    val === "all"
+      ? setFilter({ ...filter, city: "" })
+      : setFilter({ ...filter, city: val });
     refetch();
   };
 
   const handleTypeChange = (val: string) => {
-    setType(val);
+    setFilter({ ...filter, type: val });
     refetch();
   };
 
@@ -55,7 +55,7 @@ export function SelectWrapper() {
           ))}
         </SelectContent>
       </Select>
-      <Select onValueChange={handleTypeChange}>
+      <Select onValueChange={handleTypeChange} value={filter.type}>
         <SelectTrigger className="w-[180px] bg-white">
           <SelectValue placeholder="Prix" />
         </SelectTrigger>

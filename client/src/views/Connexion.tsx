@@ -4,34 +4,50 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import { useAlert } from "@/hooks/useAlert";
 import { useNavigate } from "react-router";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function Connexion() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const context = useAlert();
-  const { alert, setAlert } = context;
+  const { setUser } = useUserStore();
   const navigate = useNavigate();
+  const { alert, setAlert } = context;
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const url = import.meta.env.VITE_API_URL;
-    fetch(`${url}/auth/login`, {
+    const response = await fetch(`${url}/auth/login`, {
       method: "POST",
-      body: JSON.stringify({ email, password }),
       headers: {
         "Content-Type": "application/json",
       },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.success) {
-          setAlert({ message: data.message, type: "error", isVisible: true });
-          setTimeout(() => {
-            setAlert({ message: "", type: "", isVisible: false });
-          }, 4000);
-        } else {
-          navigate("/dashboard");
-        }
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+    let data = await response.json();
+
+    if (!data.success) {
+      setAlert({
+        type: "error",
+        message: data.message,
+        isVisible: true,
       });
+      return;
+    }
+    data = data.data;
+
+    const user = {
+      company: data.user.company,
+      profile: data.user.profile,
+      email: data.user.email,
+      token: data.token,
+    };
+    setUser(user);
+    data.user.profile?.firstName
+      ? navigate("/dashboard")
+      : navigate("/profile");
   };
 
   return (

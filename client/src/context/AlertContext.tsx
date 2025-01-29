@@ -1,7 +1,5 @@
-import { Alert } from "@/components/ui/alert";
 import { createContext, ReactNode, useState } from "react";
 import { AlertContextStateI, AlertContextValueI } from "@/types";
-import { useContext } from "react";
 
 export const AlertContext = createContext<AlertContextValueI | undefined>(
   undefined

@@ -3,9 +3,15 @@ import { Dashboard } from "./views/Dashboard";
 import Connexion from "./views/Connexion";
 import { QueryClient } from "react-query";
 import { QueryClientProvider } from "react-query";
-import GlobalLayout from "./layout/GlobalLayout";
 import { AlertProvider } from "./context/AlertContext";
 import Edit from "./views/Edit";
+import AdminLayout from "./layout/AdminLayout";
+import Profile from "./views/Profile";
+import AuthLayout from "./layout/AuthLayout";
+import Company from "./views/get-started/Company";
+import { LandingPage } from "./views/LandingPage";
+import RequireAuth from "@/middleware/RequireAuth";
+import AdminAccount from "./views/get-started/AdminAccount";
 
 function App() {
   const queryClient = new QueryClient();
@@ -15,14 +21,42 @@ function App() {
       <AlertProvider>
         <BrowserRouter>
           <Routes>
-            {/* <Route path="/" element={<Home />} /> */}
+            {/* Auth Routes */}
+            <Route
+              path="/"
+              element={<AuthLayout children={<LandingPage />} />}
+            />
             <Route
               path="/connexion"
-              element={<GlobalLayout children={<Connexion />} />}
+              element={<AuthLayout children={<Connexion />} />}
             />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/annonce" element={<Edit />} />
-            <Route path="/annonce/:id" element={<Edit />} />
+            <Route path="get-started">
+              <Route
+                path="company"
+                element={<AuthLayout children={<Company />} />}
+              />
+              <Route
+                path="admin"
+                element={<AuthLayout children={<AdminAccount />} />}
+              />
+            </Route>
+
+            {/* All routes that require authentication */}
+            <Route element={<RequireAuth />}>
+              <Route
+                path="/dashboard"
+                element={<AdminLayout children={<Dashboard />} />}
+              />
+              <Route path="/profile" element={<Profile />} />
+              <Route
+                path="/annonce"
+                element={<AdminLayout children={<Edit />} />}
+              />
+              <Route
+                path="/annonce/:id"
+                element={<AdminLayout children={<Edit />} />}
+              />
+            </Route>
           </Routes>
         </BrowserRouter>
       </AlertProvider>
